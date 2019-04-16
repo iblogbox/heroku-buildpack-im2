@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+
+echo "-----> Installing Ghostscript 9.16"
+BUILD_DIR=$1
+PACKAGE="https://s3.amazonaws.com/tgl.public/buildpacks/ghostscript/ghostscript.tgz"
+LOCATION="$BUILD_DIR/vendor/gs"
+
+mkdir -p $LOCATION
+curl $PACKAGE -s -o - | tar xzf - -C $LOCATION
+
+echo "-----> Building runtime environment for Ghostscript"
+mkdir -p $BUILD_DIR/.profile.d
+echo "export PATH=\"\$HOME/vendor/gs/bin:\$PATH\"" > $BUILD_DIR/.profile.d/ghostscript.sh
+
+
+echo "-----> Installing Ghostscript 9.23"
+BUILD_DIR=$1
+PACKAGE="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs923/ghostscript-9.23-linux-x86_64.tgz"
+LOCATION="$BUILD_DIR/vendor/gs/others"
+
+mkdir -p $LOCATION
+curl $PACKAGE -L -s -o - | tar xzf - -C $LOCATION
+
+
+echo "-----> Installing GhostXPS"
+BUILD_DIR=$1
+#PACKAGE="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs920/ghostxps-9.20-linux-x86_64.tgz"
+PACKAGE="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs923/ghostxps-9.23-linux-x86_64.tgz"
+LOCATION="$BUILD_DIR/vendor/ghostxps"
+
+mkdir -p $LOCATION
+curl $PACKAGE -L -s -o - | tar xzf - -C $LOCATION
+
+echo "-----> Building runtime environment for GhostXPS"
+mkdir -p $BUILD_DIR/.profile.d
+echo "export PATH=\"\$HOME/vendor/ghostxps/ghostxps-9.23-linux-x86_64:\$PATH\"" > $BUILD_DIR/.profile.d/ghostxps.sh
+
+
+echo "-----> Installing GhostPCL"
+BUILD_DIR=$1
+#PACKAGE="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs920/ghostpcl-9.20-linux-x86_64.tgz"
+PACKAGE="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs923/ghostpcl-9.23-linux-x86_64.tgz"
+LOCATION="$BUILD_DIR/vendor/ghostpcl"
+
+mkdir -p $LOCATION
+curl $PACKAGE -L -s -o - | tar xzf - -C $LOCATION
+
+echo "-----> Building runtime environment for GhostPCL"
+mkdir -p $BUILD_DIR/.profile.d
+echo "export PATH=\"\$HOME/vendor/ghostpcl/ghostpcl-9.23-linux-x86_64:\$PATH\"" > $BUILD_DIR/.profile.d/ghostpcl.sh
